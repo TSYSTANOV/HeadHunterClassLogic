@@ -43,7 +43,6 @@ class FilterAndSort {
     data = this.sortByOrderValue(data);
     data = this.sortByPeriodValue(data);
     if (dataArray) {
-      console.log(1);
       return data;
     }
     VACANCIES_component.removeVacancy();

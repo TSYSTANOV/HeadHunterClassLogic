@@ -29,6 +29,7 @@ class HeaderCity {
       param ? param : "country",
       this.btnOpenWidnow.textContent
     );
+    VACANCIES_component.DATA_VACANCIES = data;
     VACANCIES_component.removeVacancy();
     VACANCIES_component.renderVacancy(data);
     /////

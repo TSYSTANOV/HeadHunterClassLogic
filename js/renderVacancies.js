@@ -23,8 +23,8 @@ class Vacancies {
     } else {
       data = await API_component.getVacancies();
     }
+
     data = FILTR_SORT_component.sortByParams(data);
-    this.DATA_VACANCIES = data;
     const list = document.createElement("ul");
     list.className = "result__list";
 
