@@ -91,12 +91,17 @@ class FilterAndSort {
       return dataArr;
     }
     if (data.salary) {
+      // const a = new URL(location);
+      // a.searchParams.append("salary", data.salary);
+      // a.searchParams.delete("salary");
+      // history.pushState(null, null, a);
       dataArr = dataArr.filter((elem) => {
         if (elem.minCompensation > data.salary) {
           return true;
         }
       });
     }
+
     if (data.experience) {
       dataArr = dataArr.filter((elem) => {
         if (elem.experience === data.experience) {
