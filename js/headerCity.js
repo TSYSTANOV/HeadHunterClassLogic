@@ -32,7 +32,7 @@ class HeaderCity {
     VACANCIES_component.DATA_VACANCIES = data;
     VACANCIES_component.removeVacancy();
     VACANCIES_component.renderVacancy(data);
-    /////
+
     this.btnOpenWidnow.addEventListener("click", () => {
       if (this.isWindowOpen) {
         this.removeWindow();
@@ -232,10 +232,14 @@ class HeaderCity {
           param,
           event.target.textContent,
         ]);
-        const data = await API_component.getVacanciesByLocation(
+        let data = await API_component.getVacanciesByLocation(
           param,
           event.target.textContent
         );
+
+        VACANCIES_component.DATA_VACANCIES = data;
+
+        data = FILTR_SORT_component.sortByParams(data);
         VACANCIES_component.removeVacancy();
         VACANCIES_component.renderVacancy(data);
         this.removeWindow();

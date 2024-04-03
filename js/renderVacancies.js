@@ -1,12 +1,24 @@
 import { API_component } from "./api.js";
 import { FILTR_SORT_component } from "./filterAndSort.js";
+import { LOCAL_STORAGE_component } from "./localStorage.js";
 import { MODAL_VACANCY } from "./openModalVacancy.js";
 import { SEARCH_component } from "./search.js";
 const resultList = document.querySelector(".wrapper__result");
 const headerLogo = document.querySelector(".middle__logo");
-headerLogo.addEventListener("click", () => {
+headerLogo.addEventListener("click", async () => {
   SEARCH_component.removeSearchTitle();
   VACANCIES_component.removeVacancy();
+  let dataArr = null;
+  if (LOCAL_STORAGE_component.getItem("mainLocationHH")) {
+    dataArr = await API_component.getVacanciesByLocation(
+      LOCAL_STORAGE_component.getItem("mainLocationHH")[0],
+      LOCAL_STORAGE_component.getItem("mainLocationHH")[1]
+    );
+    dataArr = FILTR_SORT_component.sortByParams(dataArr);
+    VACANCIES_component.DATA_VACANCIES = dataArr;
+    VACANCIES_component.renderVacancy(dataArr);
+    return;
+  }
   VACANCIES_component.renderVacancy();
 });
 
@@ -23,8 +35,9 @@ class Vacancies {
     } else {
       data = await API_component.getVacancies();
     }
-
-    data = FILTR_SORT_component.sortByParams(data);
+    if (data != dataVacancy) {
+      data = FILTR_SORT_component.sortByParams(data);
+    }
     const list = document.createElement("ul");
     list.className = "result__list";
 
@@ -34,7 +47,7 @@ class Vacancies {
       li.innerHTML = `
                 <article class="vacancy">
                   <h2 class="vacancy__title">
-                    <a class="vacancy__open-modal" href="#" data-vacancy="${item.id}"
+                    <a class="vacancy__open-modal" data-vacancy="${item.id}"
                       >${item.title}</a
                     >
                   </h2>

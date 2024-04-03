@@ -1,8 +1,13 @@
 import { VACANCIES_component } from "./renderVacancies.js";
+const form = document.querySelector(".filter__form");
 
 class FilterAndSort {
   searhPeriodValue = 365;
   order_ByValue = "date";
+  formElement;
+  constructor(formElem) {
+    this.formElement = formElem;
+  }
   controller() {
     const option = document.querySelector(".option");
     const order = document.querySelector(".option__btn_order");
@@ -37,16 +42,78 @@ class FilterAndSort {
       periodList.classList.toggle("option__list_active");
       this.sortByParams();
     });
+    this.formElement
+      .querySelector(".filter__reset")
+      .addEventListener("click", () => {
+        event.preventDefault();
+        this.formElement.reset();
+        this.formElement.querySelector(".filter__apply").style.display = "none";
+        this.sortByParams();
+      });
+    this.formElement.addEventListener("change", () => {
+      this.formElement.querySelector(".filter__apply").style.display = "block";
+    });
+
+    this.formElement
+      .querySelector(".filter__apply")
+      .addEventListener("click", () => {
+        event.preventDefault();
+        this.sortByParams();
+      });
   }
   sortByParams(dataArray) {
     let data = dataArray ? dataArray : VACANCIES_component.DATA_VACANCIES;
     data = this.sortByOrderValue(data);
     data = this.sortByPeriodValue(data);
+    data = this.sortByFormParams(data);
     if (dataArray) {
       return data;
     }
     VACANCIES_component.removeVacancy();
     VACANCIES_component.renderVacancy(data);
+  }
+  sortByFormParams(dataArr) {
+    const data =
+      [...new FormData(this.formElement)].length !== 0
+        ? [...new FormData(this.formElement)].reduce((acc, item) => {
+            if (item[0] === "type") {
+              console.log();
+              acc["employment"] = acc["employment"]
+                ? [...acc["employment"], item[1]]
+                : [item[1]];
+            } else {
+              acc[item[0]] = item[1];
+            }
+            return acc;
+          }, {})
+        : null;
+    if (data === null) {
+      return dataArr;
+    }
+    if (data.salary) {
+      dataArr = dataArr.filter((elem) => {
+        if (elem.minCompensation > data.salary) {
+          return true;
+        }
+      });
+    }
+    if (data.experience) {
+      dataArr = dataArr.filter((elem) => {
+        if (elem.experience === data.experience) {
+          return true;
+        }
+      });
+    }
+    if (data.employment) {
+      dataArr = dataArr.filter((elem) => {
+        for (let i = 0; i < data.employment.length; i++) {
+          if (elem.employment.includes(data.employment[i])) {
+            return true;
+          }
+        }
+      });
+    }
+    return dataArr;
   }
   sortByOrderValue(data) {
     switch (this.order_ByValue) {
@@ -80,5 +147,5 @@ class FilterAndSort {
     });
   }
 }
-const FILTR_SORT_component = new FilterAndSort();
+const FILTR_SORT_component = new FilterAndSort(form);
 export { FILTR_SORT_component };
