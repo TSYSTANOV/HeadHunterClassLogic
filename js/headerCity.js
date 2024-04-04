@@ -19,7 +19,6 @@ class HeaderCity {
   async initHeader() {
     let param = null;
     const urlData = new URL(location);
-
     if (
       LOCAL_STORAGE_component.getItem("mainLocationHH") ||
       urlData.searchParams.has("location")
@@ -28,25 +27,20 @@ class HeaderCity {
         "mainLocationHH"
       )
         ? LOCAL_STORAGE_component.getItem("mainLocationHH")[1]
-        : urlData.searchParams.get("location");
+        : JSON.parse(urlData.searchParams.get("location"))[0];
       param = LOCAL_STORAGE_component.getItem("mainLocationHH")
         ? LOCAL_STORAGE_component.getItem("mainLocationHH")[0]
-        : null;
-
+        : JSON.parse(urlData.searchParams.get("location"))[1];
       // const urlData = new URL(location);
       if (urlData.searchParams.has("location")) {
         urlData.searchParams.set(
           "location",
-          LOCAL_STORAGE_component.getItem("mainLocationHH")
-            ? LOCAL_STORAGE_component.getItem("mainLocationHH")[1]
-            : urlData.searchParams.get("location")
+          urlData.searchParams.get("location")
         );
       } else {
         urlData.searchParams.append(
           "location",
-          LOCAL_STORAGE_component.getItem("mainLocationHH")
-            ? LOCAL_STORAGE_component.getItem("mainLocationHH")[1]
-            : urlData.searchParams.get("location")
+          urlData.searchParams.get("location")
         );
       }
       history.pushState(null, null, urlData);
@@ -54,9 +48,15 @@ class HeaderCity {
       this.btnOpenWidnow.textContent = "Украина";
       const urlData = new URL(location);
       if (urlData.searchParams.has("location")) {
-        urlData.searchParams.set("location", "Украина");
+        urlData.searchParams.set(
+          "location",
+          JSON.stringify(["Украина", "country"])
+        );
       } else {
-        urlData.searchParams.append("location", "Украина");
+        urlData.searchParams.append(
+          "location",
+          JSON.stringify(["Украина", "country"])
+        );
       }
       history.pushState(null, null, urlData);
     }
@@ -263,15 +263,22 @@ class HeaderCity {
         this.btnOpenWidnow.textContent = event.target.textContent;
         const urlData = new URL(location);
         if (urlData.searchParams.has("location")) {
-          urlData.searchParams.set("location", this.btnOpenWidnow.textContent);
+          urlData.searchParams.set(
+            "location",
+            JSON.stringify([
+              this.btnOpenWidnow.textContent,
+              event.target.getAttribute("href").slice(1),
+            ])
+          );
         } else {
           urlData.searchParams.append(
             "location",
-            this.btnOpenWidnow.textContent
+            JSON.stringify([
+              this.btnOpenWidnow.textContent,
+              event.target.getAttribute("href").slice(1),
+            ])
           );
         }
-
-        console.log(urlData);
         history.pushState(null, null, urlData);
         const param = event.target.getAttribute("href").slice(1);
         LOCAL_STORAGE_component.setItem("mainLocationHH", [
