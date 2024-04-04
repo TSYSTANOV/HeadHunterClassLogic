@@ -22,8 +22,24 @@ class HeaderCity {
       this.btnOpenWidnow.textContent =
         LOCAL_STORAGE_component.getItem("mainLocationHH")[1];
       param = LOCAL_STORAGE_component.getItem("mainLocationHH")[0];
+
+      const urlData = new URL(location)
+      if(urlData.searchParams.has('location')){
+        urlData.searchParams.set('location', LOCAL_STORAGE_component.getItem("mainLocationHH")[1])
+      }else{
+        urlData.searchParams.append('location', LOCAL_STORAGE_component.getItem("mainLocationHH")[1])
+      }
+      history.pushState(null, null, urlData)
+
     } else {
       this.btnOpenWidnow.textContent = "Украина";
+      const urlData = new URL(location)
+      if(urlData.searchParams.has('location')){
+        urlData.searchParams.set('location', 'Украина')
+      }else{
+        urlData.searchParams.append('location', 'Украина')
+      }
+      history.pushState(null, null, urlData)
     }
     let data = await API_component.getVacanciesByLocation(
       param ? param : "country",
@@ -52,7 +68,7 @@ class HeaderCity {
     this.isWindowOpen = true;
     const city = document.createElement("div");
     city.className = `city ${this.activeClass}`;
-    city.innerHTML = `    
+    city.innerHTML = `
       <div class="container city__container">
         <button class="city__close">✕</button>
         <form class="city__form">
@@ -226,7 +242,15 @@ class HeaderCity {
       SEARCH_component.removeSearchTitle();
       if (event.target.classList.contains("city__link")) {
         this.btnOpenWidnow.textContent = event.target.textContent;
+        const urlData = new URL(location)
+        if(urlData.searchParams.has('location')){
+          urlData.searchParams.set('location',this.btnOpenWidnow.textContent)
+        }else{
+          urlData.searchParams.append('location',this.btnOpenWidnow.textContent)
+        }
 
+        console.log(urlData)
+        history.pushState(null,null,urlData)
         const param = event.target.getAttribute("href").slice(1);
         LOCAL_STORAGE_component.setItem("mainLocationHH", [
           param,

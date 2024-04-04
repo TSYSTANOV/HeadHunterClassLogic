@@ -28,16 +28,19 @@ class Vacancies {
   constructor(root) {
     this.ROOT_element = root;
   }
-  async renderVacancy(dataVacancy) {
+  async renderVacancy(dataVacancy, filteredData = false) {
     let data = null;
     if (dataVacancy) {
       data = dataVacancy;
     } else {
       data = await API_component.getVacancies();
     }
-    if (data != dataVacancy) {
+    if(filteredData === false){
       data = FILTR_SORT_component.sortByParams(data);
     }
+
+
+
     const list = document.createElement("ul");
     list.className = "result__list";
 

@@ -1,4 +1,5 @@
 import { VACANCIES_component } from "./renderVacancies.js";
+import { URL_component } from "./url.js";
 const form = document.querySelector(".filter__form");
 
 class FilterAndSort {
@@ -48,8 +49,13 @@ class FilterAndSort {
         event.preventDefault();
         this.formElement.reset();
         this.formElement.querySelector(".filter__apply").style.display = "none";
+        URL_component.removeSearchParams()
         this.sortByParams();
       });
+    if(this.setFormParamsByUrl(this.formElement)){
+      this.formElement.querySelector(".filter__apply").style.display = "block";
+
+    }
     this.formElement.addEventListener("change", () => {
       this.formElement.querySelector(".filter__apply").style.display = "block";
     });
@@ -61,7 +67,12 @@ class FilterAndSort {
         this.sortByParams();
       });
   }
+  setFormParamsByUrl(formElem){
+    const objDataForm = URL_component.getSearhParams(formElem)
+    return objDataForm
+  }
   sortByParams(dataArray) {
+
     let data = dataArray ? dataArray : VACANCIES_component.DATA_VACANCIES;
     data = this.sortByOrderValue(data);
     data = this.sortByPeriodValue(data);
@@ -70,7 +81,7 @@ class FilterAndSort {
       return data;
     }
     VACANCIES_component.removeVacancy();
-    VACANCIES_component.renderVacancy(data);
+    VACANCIES_component.renderVacancy(data, true);
   }
   sortByFormParams(dataArr) {
     const data =
@@ -90,11 +101,8 @@ class FilterAndSort {
     if (data === null) {
       return dataArr;
     }
+    URL_component.addSearchParams(data)
     if (data.salary) {
-      // const a = new URL(location);
-      // a.searchParams.append("salary", data.salary);
-      // a.searchParams.delete("salary");
-      // history.pushState(null, null, a);
       dataArr = dataArr.filter((elem) => {
         if (elem.minCompensation > data.salary) {
           return true;
