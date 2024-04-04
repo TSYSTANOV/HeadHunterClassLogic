@@ -35,11 +35,9 @@ class Vacancies {
     } else {
       data = await API_component.getVacancies();
     }
-    if(filteredData === false){
+    if (filteredData === false) {
       data = FILTR_SORT_component.sortByParams(data);
     }
-
-
 
     const list = document.createElement("ul");
     list.className = "result__list";

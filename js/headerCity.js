@@ -18,28 +18,47 @@ class HeaderCity {
   }
   async initHeader() {
     let param = null;
-    if (LOCAL_STORAGE_component.getItem("mainLocationHH")) {
-      this.btnOpenWidnow.textContent =
-        LOCAL_STORAGE_component.getItem("mainLocationHH")[1];
-      param = LOCAL_STORAGE_component.getItem("mainLocationHH")[0];
+    const urlData = new URL(location);
 
-      const urlData = new URL(location)
-      if(urlData.searchParams.has('location')){
-        urlData.searchParams.set('location', LOCAL_STORAGE_component.getItem("mainLocationHH")[1])
-      }else{
-        urlData.searchParams.append('location', LOCAL_STORAGE_component.getItem("mainLocationHH")[1])
+    if (
+      LOCAL_STORAGE_component.getItem("mainLocationHH") ||
+      urlData.searchParams.has("location")
+    ) {
+      this.btnOpenWidnow.textContent = LOCAL_STORAGE_component.getItem(
+        "mainLocationHH"
+      )
+        ? LOCAL_STORAGE_component.getItem("mainLocationHH")[1]
+        : urlData.searchParams.get("location");
+      param = LOCAL_STORAGE_component.getItem("mainLocationHH")
+        ? LOCAL_STORAGE_component.getItem("mainLocationHH")[0]
+        : null;
+
+      // const urlData = new URL(location);
+      if (urlData.searchParams.has("location")) {
+        urlData.searchParams.set(
+          "location",
+          LOCAL_STORAGE_component.getItem("mainLocationHH")
+            ? LOCAL_STORAGE_component.getItem("mainLocationHH")[1]
+            : urlData.searchParams.get("location")
+        );
+      } else {
+        urlData.searchParams.append(
+          "location",
+          LOCAL_STORAGE_component.getItem("mainLocationHH")
+            ? LOCAL_STORAGE_component.getItem("mainLocationHH")[1]
+            : urlData.searchParams.get("location")
+        );
       }
-      history.pushState(null, null, urlData)
-
+      history.pushState(null, null, urlData);
     } else {
       this.btnOpenWidnow.textContent = "Украина";
-      const urlData = new URL(location)
-      if(urlData.searchParams.has('location')){
-        urlData.searchParams.set('location', 'Украина')
-      }else{
-        urlData.searchParams.append('location', 'Украина')
+      const urlData = new URL(location);
+      if (urlData.searchParams.has("location")) {
+        urlData.searchParams.set("location", "Украина");
+      } else {
+        urlData.searchParams.append("location", "Украина");
       }
-      history.pushState(null, null, urlData)
+      history.pushState(null, null, urlData);
     }
     let data = await API_component.getVacanciesByLocation(
       param ? param : "country",
@@ -242,15 +261,18 @@ class HeaderCity {
       SEARCH_component.removeSearchTitle();
       if (event.target.classList.contains("city__link")) {
         this.btnOpenWidnow.textContent = event.target.textContent;
-        const urlData = new URL(location)
-        if(urlData.searchParams.has('location')){
-          urlData.searchParams.set('location',this.btnOpenWidnow.textContent)
-        }else{
-          urlData.searchParams.append('location',this.btnOpenWidnow.textContent)
+        const urlData = new URL(location);
+        if (urlData.searchParams.has("location")) {
+          urlData.searchParams.set("location", this.btnOpenWidnow.textContent);
+        } else {
+          urlData.searchParams.append(
+            "location",
+            this.btnOpenWidnow.textContent
+          );
         }
 
-        console.log(urlData)
-        history.pushState(null,null,urlData)
+        console.log(urlData);
+        history.pushState(null, null, urlData);
         const param = event.target.getAttribute("href").slice(1);
         LOCAL_STORAGE_component.setItem("mainLocationHH", [
           param,
